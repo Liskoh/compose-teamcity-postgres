@@ -13,6 +13,16 @@ services:
     depends_on:
       - postgres
 
+  teamcity-agent:
+    container_name: "${TEAMCITY_AGENT_SERVICE_NAME}"
+    image: jetbrains/teamcity-agent:latest
+    environment:
+      - SERVER_URL=http://teamcity-server:${TEAMCITY_PORT}
+    depends_on:
+      - teamcity-server
+    volumes:
+      - teamcity_agent_conf:/data/teamcity_agent/conf
+
   postgres:
     container_name: "${POSTGRES_SERVICE_NAME}"
     image: postgres:latest
@@ -28,4 +38,5 @@ services:
 volumes:
   teamcity_data:
   teamcity_logs:
+  teamcity_agent_conf:
   postgres_data:
