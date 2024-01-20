@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  teamcity-server:
+    container_name: "${TEAMCITY_SERVICE_NAME}"
+    image: jetbrains/teamcity-server:latest
+    ports:
+      - "${TEAMCITY_PORT}:${TEAMCITY_PORT}"
+    volumes:
+      - teamcity_data:/data/teamcity_server/datadir
+      - teamcity_logs:/opt/teamcity/logs
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/${POSTGRES_DB}
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: "${POSTGRES_SERVICE_NAME}"
+    image: postgres:latest
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  teamcity_data:
+  teamcity_logs:
+  postgres_data:
